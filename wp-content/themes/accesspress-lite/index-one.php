@@ -21,9 +21,168 @@ if($disable_event == 1){
 	$welcome_class = "";
 }
 if( $accesspresslite_layout !== 'Layout2') { ?>
-<?php do_action('accesspresslite_call_to_action');?>	
+<?php do_action('accesspresslite_call_to_action');?>			
+<section id="top-section" class="ak-container">
+<div id="welcome-text" class="clearfix <?php echo $welcome_class; ?>">
+	<?php
+		
+			if(!empty($accesspresslite_welcome_post_id)){
+			$posttype = get_post_type($accesspresslite_welcome_post_id);
+			$postparam = ($posttype == 'page') ? 'page_id': 'p';
+			$args = array(
+				'post_type' => $posttype,
+				$postparam => $accesspresslite_welcome_post_id
+				);
+			$query1 = new WP_Query( $args );
+				while ($query1->have_posts()) : $query1->the_post(); ?>
+					 
+					<h1><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h1>
+					
+					<?php 
+					if( has_post_thumbnail() ){
+					$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full', false ); 
+					?>
 
-</br>
+					<figure class="welcome-text-image">
+						<a href="<?php the_permalink(); ?>">
+						<img src="<?php echo $image[0]; ?>" alt="<?php the_title(); ?>">
+						</a>
+					</figure>	
+					<?php } ?>
+					
+					<div  class="welcome-detail<?php if( !has_post_thumbnail() ){ echo " welcome-detail-full-width"; } ?>">
+					
+					<?php if($accesspresslite_settings['welcome_post_content'] == 0 || empty($accesspresslite_settings['welcome_post_content'])){ ?>
+						<p><?php echo accesspresslite_excerpt( get_the_content() , $accesspresslite_welcome_post_char ) ?></p>
+						<?php if(!empty($accesspresslite_settings['welcome_post_readmore'])){?>
+							<a href="<?php the_permalink(); ?>" class="read-more bttn"><?php echo $accesspresslite_settings['welcome_post_readmore']; ?></a>
+						<?php } 
+					}else{ 
+						the_content();
+					} ?>
+					
+					</div>
+					
+				<?php endwhile;	
+				wp_reset_postdata(); 
+				}
+				
+				else{ ?>
+				
+				<h1><a href="#"><?php _e('Free WordPress theme - ACCESSPRESS LITE','accesspresslite'); ?></a></h1>
+				<figure class="welcome-text-image">
+				<a href="#">
+					<img src="<?php echo get_template_directory_uri(); ?>/images/demo/welcome-image.jpg" alt="welcome">
+				</a>
+				</figure>
+
+				<div  class="welcome-detail">
+				<p><?php _e('AccessPress Lite is a HTML5 & CSS3 Responsive Free WordPress Business Theme with clean, minimal yet highly professional design.','accesspresslite'); ?></p>
+<p><?php _e('With our years of experience, we have developed this theme and given back to this awesome WordPress community. It is feature rich, multi purpose and flexible responsive theme Suitable for Agencies, Small Biz, Corporates, Bloggers - Anyone and Everyone!','accesspresslite'); ?></p>
+<p><?php _e('The theme is complete with many useful features. The intuitive theme options let you manage all the possible options/features of the theme. You can use it to create your next superb website in no time and all for FREE.','accesspresslite'); ?></p>
+				<a href="#" class="readmore bttn"><?php _e('Read More','accesspresslite'); ?></a>
+				</div>
+
+			<?php } ?>
+</div>
+
+<?php if($disable_event != 1): ?>
+<div id="latest-events">
+
+			<?php
+			if(is_active_sidebar('event-sidebar')) {
+				dynamic_sidebar('event-sidebar');
+			}else{
+				if(!empty($accesspresslite_event_category)){
+
+	            $loop = new WP_Query( array(
+	                'cat' => $accesspresslite_event_category,
+	                'posts_per_page' => $accesspresslite_show_event_number,
+	            )); ?>
+
+	        <h1><a href="<?php echo get_category_link($accesspresslite_event_category); ?>"><?php echo get_cat_name($accesspresslite_event_category); ?></a></h1>
+
+	        <?php while ($loop->have_posts()) : $loop->the_post(); ?>
+
+	        	<?php 
+				$accesspresslite_event_day = get_post_meta( $post->ID, 'accesspresslite_event_day', true );
+				$accesspresslite_event_month = get_post_meta( $post->ID, 'accesspresslite_event_month', true );
+				$accesspresslite_event_year = get_post_meta( $post->ID, 'accesspresslite_event_year', true );
+				?>
+
+	        	<div class="event-list clearfix">
+	        		
+	        		<figure class="event-thumbnail">
+						<a href="<?php the_permalink(); ?>">
+						<?php 
+						if( has_post_thumbnail() ){
+						$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'event-thumbnail', false ); 
+						?>
+						<img src="<?php echo $image[0]; ?>" alt="<?php the_title(); ?>">
+						<?php } else { ?>
+						<img src="<?php echo get_template_directory_uri(); ?>/images/demo/event-fallback.jpg" alt="<?php the_title(); ?>">
+						<?php } ?>
+						
+						<?php 
+						if($accesspresslite_settings['show_eventdate'] == 1){
+						if(!empty($accesspresslite_event_day) || !empty($accesspresslite_event_month) || !empty($accesspresslite_event_year)){ ?>
+						<div class="event-date">
+							<span class="event-date-day"><?php echo $accesspresslite_event_day; ?> <?php echo $accesspresslite_event_month; ?></span>
+							<span class="event-date-month"><?php echo $accesspresslite_event_year; ?></span>
+						</div>
+						<?php }else {?>
+							<div class="event-date">
+							<span class="event-date-day"><?php echo get_the_date('j'); ?></span>
+							<span class="event-date-month"><?php echo get_the_date('M'); ?></span>
+							</div>
+						<?php } 
+						}?>
+						</a>
+					</figure>	
+
+					<div class="event-detail">
+		        		<h4 class="event-title">
+		        			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+		        		</h4>
+
+		        		<div class="event-excerpt">
+		        			<?php echo accesspresslite_excerpt( get_the_content() , 100 ) ?>
+		        		</div>
+	        		</div>
+	        	</div>
+	        <?php endwhile; ?>
+	        <?php wp_reset_postdata(); 
+
+	        } else { ?>
+	        
+	        <h1>Latest Events/News</h1>
+		        <?php for ( $event_count=1 ; $event_count < 4 ; $event_count++ ) { ?>
+		        <div class="event-list clearfix">
+						<figure class="event-thumbnail">
+							<a href="#"><img src="<?php echo get_template_directory_uri().'/images/demo/event-'.$event_count.'.jpg'; ?>" alt="<?php echo 'event'.$event_count; ?>">
+							<div class="event-date">
+								<span class="event-date-day"><?php echo $event_count; ?></span>
+								<span class="event-date-month"><?php _e('Mar','accesspresslite'); ?></span>
+							</div>
+							</a>
+						</figure>	
+
+						<div class="event-detail">
+			        		<h4 class="event-title">
+			        			<a href="#"><?php _e('Title of the event-','accesspresslite'); ?><?php echo $event_count; ?></a>
+			        		</h4>
+
+			        		<div class="event-excerpt">
+			        			<?php _e('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...','accesspresslite'); ?>
+			        		</div>
+		        		</div>
+		        	</div>
+		        <?php } 
+	        	}
+	        } ?>
+</div>
+<?php endif; ?>
+</section>
 
 <section id="mid-section" class="ak-container">
 <?php 
@@ -226,170 +385,6 @@ if(!empty($featured_post1) || !empty($featured_post2) || !empty($featured_post3)
 	<?php }
 	} ?>
 </section>
-
-<section id="top-section" class="ak-container">
-<div id="welcome-text" class="clearfix <?php echo $welcome_class; ?>">
-	<?php
-		
-			if(!empty($accesspresslite_welcome_post_id)){
-			$posttype = get_post_type($accesspresslite_welcome_post_id);
-			$postparam = ($posttype == 'page') ? 'page_id': 'p';
-			$args = array(
-				'post_type' => $posttype,
-				$postparam => $accesspresslite_welcome_post_id
-				);
-			$query1 = new WP_Query( $args );
-				while ($query1->have_posts()) : $query1->the_post(); ?>
-					 
-					<h1><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h1>
-					
-					<?php 
-					if( has_post_thumbnail() ){
-					$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full', false ); 
-					?>
-
-					<figure class="welcome-text-image">
-						<a href="<?php the_permalink(); ?>">
-						<img src="<?php echo $image[0]; ?>" alt="<?php the_title(); ?>">
-						</a>
-					</figure>	
-					<?php } ?>
-					
-					<div  class="welcome-detail<?php if( !has_post_thumbnail() ){ echo " welcome-detail-full-width"; } ?>">
-					
-					<?php if($accesspresslite_settings['welcome_post_content'] == 0 || empty($accesspresslite_settings['welcome_post_content'])){ ?>
-						<p><?php echo accesspresslite_excerpt( get_the_content() , $accesspresslite_welcome_post_char ) ?></p>
-						<?php if(!empty($accesspresslite_settings['welcome_post_readmore'])){?>
-							<a href="<?php the_permalink(); ?>" class="read-more bttn"><?php echo $accesspresslite_settings['welcome_post_readmore']; ?></a>
-						<?php } 
-					}else{ 
-						the_content();
-					} ?>
-					
-					</div>
-					
-				<?php endwhile;	
-				wp_reset_postdata(); 
-				}
-				
-				else{ ?>
-				
-				<h1><a href="#"><?php _e('Free WordPress theme - ACCESSPRESS LITE','accesspresslite'); ?></a></h1>
-				<figure class="welcome-text-image">
-				<a href="#">
-					<img src="<?php echo get_template_directory_uri(); ?>/images/demo/welcome-image.jpg" alt="welcome">
-				</a>
-				</figure>
-
-				<div  class="welcome-detail">
-				<p><?php _e('AccessPress Lite is a HTML5 & CSS3 Responsive Free WordPress Business Theme with clean, minimal yet highly professional design.','accesspresslite'); ?></p>
-<p><?php _e('With our years of experience, we have developed this theme and given back to this awesome WordPress community. It is feature rich, multi purpose and flexible responsive theme Suitable for Agencies, Small Biz, Corporates, Bloggers - Anyone and Everyone!','accesspresslite'); ?></p>
-<p><?php _e('The theme is complete with many useful features. The intuitive theme options let you manage all the possible options/features of the theme. You can use it to create your next superb website in no time and all for FREE.','accesspresslite'); ?></p>
-				<a href="#" class="readmore bttn"><?php _e('Read More','accesspresslite'); ?></a>
-				</div>
-
-			<?php } ?>
-</div>
-
-<?php if($disable_event != 1): ?>
-<div id="latest-events">
-
-			<?php
-			if(is_active_sidebar('event-sidebar')) {
-				dynamic_sidebar('event-sidebar');
-			}else{
-				if(!empty($accesspresslite_event_category)){
-
-	            $loop = new WP_Query( array(
-	                'cat' => $accesspresslite_event_category,
-	                'posts_per_page' => $accesspresslite_show_event_number,
-	            )); ?>
-
-	        <h1><a href="<?php echo get_category_link($accesspresslite_event_category); ?>"><?php echo get_cat_name($accesspresslite_event_category); ?></a></h1>
-
-	        <?php while ($loop->have_posts()) : $loop->the_post(); ?>
-
-	        	<?php 
-				$accesspresslite_event_day = get_post_meta( $post->ID, 'accesspresslite_event_day', true );
-				$accesspresslite_event_month = get_post_meta( $post->ID, 'accesspresslite_event_month', true );
-				$accesspresslite_event_year = get_post_meta( $post->ID, 'accesspresslite_event_year', true );
-				?>
-
-	        	<div class="event-list clearfix">
-	        		
-	        		<figure class="event-thumbnail">
-						<a href="<?php the_permalink(); ?>">
-						<?php 
-						if( has_post_thumbnail() ){
-						$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'event-thumbnail', false ); 
-						?>
-						<img src="<?php echo $image[0]; ?>" alt="<?php the_title(); ?>">
-						<?php } else { ?>
-						<img src="<?php echo get_template_directory_uri(); ?>/images/demo/event-fallback.jpg" alt="<?php the_title(); ?>">
-						<?php } ?>
-						
-						<?php 
-						if($accesspresslite_settings['show_eventdate'] == 1){
-						if(!empty($accesspresslite_event_day) || !empty($accesspresslite_event_month) || !empty($accesspresslite_event_year)){ ?>
-						<div class="event-date">
-							<span class="event-date-day"><?php echo $accesspresslite_event_day; ?> <?php echo $accesspresslite_event_month; ?></span>
-							<span class="event-date-month"><?php echo $accesspresslite_event_year; ?></span>
-						</div>
-						<?php }else {?>
-							<div class="event-date">
-							<span class="event-date-day"><?php echo get_the_date('j'); ?></span>
-							<span class="event-date-month"><?php echo get_the_date('M'); ?></span>
-							</div>
-						<?php } 
-						}?>
-						</a>
-					</figure>	
-
-					<div class="event-detail">
-		        		<h4 class="event-title">
-		        			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-		        		</h4>
-
-		        		<div class="event-excerpt">
-		        			<?php echo accesspresslite_excerpt( get_the_content() , 100 ) ?>
-		        		</div>
-	        		</div>
-	        	</div>
-	        <?php endwhile; ?>
-	        <?php wp_reset_postdata(); 
-
-	        } else { ?>
-	        
-	        <h1>Latest Events/News</h1>
-		        <?php for ( $event_count=1 ; $event_count < 4 ; $event_count++ ) { ?>
-		        <div class="event-list clearfix">
-						<figure class="event-thumbnail">
-							<a href="#"><img src="<?php echo get_template_directory_uri().'/images/demo/event-'.$event_count.'.jpg'; ?>" alt="<?php echo 'event'.$event_count; ?>">
-							<div class="event-date">
-								<span class="event-date-day"><?php echo $event_count; ?></span>
-								<span class="event-date-month"><?php _e('Mar','accesspresslite'); ?></span>
-							</div>
-							</a>
-						</figure>	
-
-						<div class="event-detail">
-			        		<h4 class="event-title">
-			        			<a href="#"><?php _e('Title of the event-','accesspresslite'); ?><?php echo $event_count; ?></a>
-			        		</h4>
-
-			        		<div class="event-excerpt">
-			        			<?php _e('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...','accesspresslite'); ?>
-			        		</div>
-		        		</div>
-		        	</div>
-		        <?php } 
-	        	}
-	        } ?>
-</div>
-<?php endif; ?>
-</section>
-
-
 <?php } 
 ?>
 
