@@ -1,5 +1,5 @@
 /*
-Theme Name: Accesspress Lite
+Theme Name: Accesspress Lite Child Theme
 Theme URI: http://accesspressthemes.com/wordpress-themes/accesspress-lite/
 Author: AccessPress Themes
 Author URI: http://accesspressthemes.com
@@ -16,3 +16,4 @@ Accesspress Lite WordPress Theme, Copyright 2014 http://access-keys.com/
 Accesspress Lite is distributed under the terms of the GNU GPL
 Accesspress Lite is based on Underscores http://underscores.me/, (C) 2012-2014 Automattic, Inc.
 */
+@import url("../accesspress-lite/style.css");
