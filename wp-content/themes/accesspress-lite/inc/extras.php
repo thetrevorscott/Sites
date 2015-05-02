@@ -435,13 +435,10 @@ add_action( 'wp_enqueue_scripts', 'accesspresslite_scripts' );
 						if($loop->have_posts()){ 
 						while($loop->have_posts()) : $loop-> the_post(); 
 						$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full', false ); 
-						$link = get_post_permalink( $post->ID )
 						?>
 						<div class="slides">
 							
-							<a href="<?php echo $link ?>">
 								<img alt="<?php echo get_the_title(); ?>" src="<?php echo $image[0]; ?>">
-							</a>
 								
 								<?php if($accesspresslite_settings['slider_caption']=='yes4'):?>
 								<div class="slider-caption">
@@ -470,13 +467,10 @@ add_action( 'wp_enqueue_scripts', 'accesspresslite_scripts' );
 					if($loop->have_posts()){ 
 					while($loop->have_posts()) : $loop-> the_post(); 
 					$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full', false ); 
-					$link = get_post_permalink( $post->ID )
 					?>
 					<div class="slides">
 							
-						<a href="<?php echo $link ?>">	
-							<img alt="<?php echo get_the_title(); ?>" src="<?php echo $image[0]; ?>">
-						</a>
+						<img alt="<?php echo get_the_title(); ?>" src="<?php echo $image[0]; ?>">
 								
 						<?php if($accesspresslite_settings['slider_caption']=='yes4'):?>
 						<div class="slider-caption">
@@ -602,3 +596,5 @@ add_action( 'wp_enqueue_scripts', 'accesspresslite_scripts' );
 	}
 
 	add_action('accesspresslite_call_to_action','accesspresslite_call_to_action_cb', 10);
+
+	add_filter('widget_text', 'do_shortcode');
